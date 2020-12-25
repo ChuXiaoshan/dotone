@@ -1,0 +1,51 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    ext.kotlin_version = "1.4.20"
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:4.1.1"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
+        google()
+        jcenter()
+        parseLocalProperties()
+    }
+}
+
+def parseLocalProperties() {
+    File file = rootProject.file('local.properties')
+    if (file.exists()) {
+        InputStream inputStream = rootProject.file('local.properties').newDataInputStream();
+        Properties properties = new Properties()
+        properties.load(inputStream)
+
+        if (properties.containsKey("store_file")) {
+            ext.store_file = properties.getProperty("store_file")
+        }
+        if (properties.containsKey("store_pwd")) {
+            ext.store_pwd = properties.getProperty("store_pwd")
+        }
+        if (properties.containsKey("key_alias")) {
+            ext.key_alias = properties.getProperty("key_alias")
+        }
+        if (properties.containsKey("key_pwd")) {
+            ext.key_pwd = properties.getProperty("key_pwd")
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
